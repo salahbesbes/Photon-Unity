@@ -79,7 +79,7 @@ public class Luncher : MonoBehaviourPunCallbacks
 		}
 
 		startButton.gameObject.SetActive(PhotonNetwork.IsMasterClient);
-		Debug.Log($"{PhotonNetwork.LocalPlayer} joinned {PhotonNetwork.CurrentRoom.Name} room");
+		//Debug.Log($"{PhotonNetwork.LocalPlayer} joinned {PhotonNetwork.CurrentRoom.Name} room");
 	}
 
 	public override void OnJoinRoomFailed(short returnCode, string message)
@@ -95,7 +95,7 @@ public class Luncher : MonoBehaviourPunCallbacks
 	public override void OnRoomListUpdate(List<RoomInfo> roomList)
 	{
 		RoomListMenu roomListMenu = CanvasManager.Instance.getMenu<RoomListMenu>("roomListMenu");
-
+		Debug.Log($"{roomList.Count}");
 		foreach (Transform child in roomListMenu.roomsContainer)
 		{
 			Destroy(child.gameObject);
@@ -103,6 +103,7 @@ public class Luncher : MonoBehaviourPunCallbacks
 
 		foreach (RoomInfo room in roomList)
 		{
+			Debug.Log($"{room.Name}");
 			if (room.RemovedFromList) continue;
 			Instantiate(roomListMenu.roomPrefab, roomListMenu.roomsContainer).GetComponent<RoomItem>().SetUp(room);
 		}
