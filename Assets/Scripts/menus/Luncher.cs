@@ -147,7 +147,7 @@ public class Luncher : MonoBehaviourPunCallbacks
 
 	public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
 	{
-		Debug.LogError($"{propertiesThatChanged["ActiveTeam"]}");
+		//Debug.LogError($"{propertiesThatChanged["ActiveTeam"]}");
 	}
 }
 

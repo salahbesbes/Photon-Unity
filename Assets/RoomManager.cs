@@ -4,6 +4,7 @@ using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class RoomManager : MonoBehaviourPunCallbacks
 {
@@ -18,7 +19,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
 	public Transform MyTeamHolder;
 	public Transform OpponetHolder;
 
-
+	public Button switchMyState;
 
 
 
@@ -50,9 +51,8 @@ public class RoomManager : MonoBehaviourPunCallbacks
 				TEAM activeTEAM = (TEAM)PhotonNetwork.CurrentRoom.CustomProperties["ActiveTeam"];
 				if (PhotonNetwork.LocalPlayer == PhotonNetwork.MasterClient)
 				{
-					PlayerManager pm = Instantiate(whiteManagerPrefab, Vector3.zero, Quaternion.identity);
+					PlayerManager pm = Instantiate(whiteManagerPrefab, Vector3.zero, Quaternion.identity, MyTeamHolder);
 					pm.setDependencices(TEAM.White, activeTEAM, this);
-					pm.transform.SetParent(MyTeamHolder);
 					whitePlayer = pm;
 
 					Debug.LogError($"this is master Player ");
@@ -61,10 +61,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
 				}
 				else
 				{
-					PlayerManager pm = Instantiate(blackManagerPrefab, Vector3.zero, Quaternion.identity);
+					PlayerManager pm = Instantiate(blackManagerPrefab, Vector3.zero, Quaternion.identity, MyTeamHolder);
 					pm.setDependencices(TEAM.Black, activeTEAM, this);
 					blackPlayer = pm;
-					pm.transform.SetParent(MyTeamHolder);
 					Debug.LogError($"this is Client");
 					Debug.LogError($"his team is {blackPlayer.MyTeam} and the active team is {blackPlayer.ActiveTeam}");
 

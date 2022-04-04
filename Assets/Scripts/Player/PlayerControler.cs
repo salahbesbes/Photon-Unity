@@ -20,6 +20,9 @@ public class PlayerControler : MonoBehaviourPunCallbacks
 	public Item[] items;
 	private int itemIndex, prevItemIndex = -1;
 
+	public float speed = 10.0F;
+	public float rotateSpeed = 5.0F;
+
 
 	[SerializeField] public PlayerManager manager { get; private set; }
 	public Transform parent;
@@ -67,7 +70,10 @@ public class PlayerControler : MonoBehaviourPunCallbacks
 	{
 		controller = gameObject.AddComponent<CharacterController>();
 
-		if (PV.IsMine == false) enabled = false;
+		if (PV.IsMine == false)
+		{
+			enabled = false;
+		}
 		else
 		{
 			equipeItem(0);
@@ -90,28 +96,16 @@ public class PlayerControler : MonoBehaviourPunCallbacks
 
 	private void FixedUpdate()
 	{
-		groundedPlayer = controller.isGrounded;
-		if (groundedPlayer && playerVelocity.y < 0)
-		{
-			playerVelocity.y = 0f;
-		}
 
-		Vector3 move = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-		controller.Move(move * Time.deltaTime * playerSpeed);
+		CharacterController controller = GetComponent<CharacterController>();
 
-		if (move != Vector3.zero)
-		{
-			gameObject.transform.forward = move;
-		}
+		// Rotate around y - axis
+		transform.Rotate(0, Input.GetAxis("Horizontal") * rotateSpeed, 0);
 
-		// Changes the height position of the player..
-		if (Input.GetButtonDown("Jump") && groundedPlayer)
-		{
-			playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
-		}
-
-		playerVelocity.y += gravityValue * Time.deltaTime;
-		controller.Move(playerVelocity * Time.deltaTime);
+		// Move forward / backward
+		Vector3 forward = transform.TransformDirection(Vector3.forward);
+		float curSpeed = speed * Input.GetAxis("Vertical");
+		controller.SimpleMove(forward * curSpeed);
 	}
 
 	public void LookAround()
