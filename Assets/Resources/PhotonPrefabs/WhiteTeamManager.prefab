@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8052664053126711738}
   - component: {fileID: 6701963433062625639}
   m_Layer: 0
-  m_Name: PlayerManager
+  m_Name: WhiteTeamManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -67,3 +67,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4af8077a6d022e43a6973f4fc77c53c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unitHolder: {fileID: 1183578258020005289, guid: 63f2eb4c0ba22574b8d4f941bc7b2b26, type: 3}

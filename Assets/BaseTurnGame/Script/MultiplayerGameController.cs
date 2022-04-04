@@ -67,12 +67,10 @@ public class MultiplayerGameController : GameController
 	{
 		if (team == TEAM.Black)
 		{
-			ActivePlayer = blackPlayer;
 			localPlayer = blackPlayer;
 		}
 		else if (team == TEAM.White)
 		{
-			ActivePlayer = whitePlayer;
 			localPlayer = whitePlayer;
 		}
 	}

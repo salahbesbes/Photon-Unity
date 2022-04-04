@@ -65,22 +65,15 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 			{
 				TEAM occupiedTeam = (TEAM)player.CustomProperties["team"];
 				selectedTeam = occupiedTeam == TEAM.Black ? TEAM.White : TEAM.Black;
-				PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { "team", selectedTeam } });
-
-				GameObject res = gameInitializer.CreateMultiplayerBoard(selectedTeam);
-				MultiplayerBoard board = res.GetComponent<MultiplayerBoard>();
-
-				multiplayerGameController = FindObjectOfType<MultiplayerGameController>();
-				multiplayerGameController.SetDependencies(gameInitializer.cameraSetup, gameInitializer.uiManager, board);
+				MultiplayerGameController controller = gameInitializer.InitializeMultiplayerController(selectedTeam);
+				SetDependencies(controller);
+				multiplayerGameController.SetLocalPlayer(occupiedTeam);
 				multiplayerGameController.StartNewGame();
 				return;
 			}
 		}
 		PhotonNetwork.LocalPlayer.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { "team", selectedTeam } });
-		MultiplayerGameController controller = gameInitializer.InitializeMultiplayerController(selectedTeam);
-		SetDependencies(controller);
-		multiplayerGameController.SetLocalPlayer(selectedTeam);
-		multiplayerGameController.StartNewGame();
+
 
 		//chessGameController.SetupCamera((TeamColor)teamInt);
 	}
@@ -101,6 +94,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 public enum TEAM
 {
+	None,
 	Black,
 	White
 }

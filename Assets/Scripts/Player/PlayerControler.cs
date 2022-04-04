@@ -20,6 +20,16 @@ public class PlayerControler : MonoBehaviourPunCallbacks
 	public Item[] items;
 	private int itemIndex, prevItemIndex = -1;
 
+
+	[SerializeField] public PlayerManager manager { get; private set; }
+	public Transform parent;
+
+
+
+	public void setDependencies(PlayerManager manager)
+	{
+		this.manager = manager;
+	}
 	public void equipeItem(int _index)
 	{
 		if (_index == prevItemIndex)

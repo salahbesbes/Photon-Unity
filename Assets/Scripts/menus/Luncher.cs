@@ -1,3 +1,4 @@
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ public class Luncher : MonoBehaviourPunCallbacks
 
 	public override void OnConnectedToMaster()
 	{
-		Debug.Log($"connecte to master server ");
+		//Debug.Log($"connecte to master server ");
 
 		PhotonNetwork.JoinLobby();
 		// automaticly load the scene to all client
@@ -39,7 +40,7 @@ public class Luncher : MonoBehaviourPunCallbacks
 
 	public override void OnJoinedLobby()
 	{
-		Debug.Log($"joined Lobby");
+		//Debug.Log($"joined Lobby");
 		CanvasManager.Instance.openMenu("Menu");
 		PhotonNetwork.NickName = $"Player {Random.Range(0, 40)}";
 	}
@@ -52,19 +53,26 @@ public class Luncher : MonoBehaviourPunCallbacks
 			return;
 		}
 		CanvasManager.Instance.openMenu("loading");
+
+
 		PhotonNetwork.CreateRoom(roomNameInputField.text);
 	}
 
 	public override void OnCreateRoomFailed(short returnCode, string message)
 	{
 		CanvasManager.Instance.showErrorMessage($"{returnCode} : {message}");
-		Debug.Log($" created room Failed");
+		//Debug.Log($" created room Failed");
 	}
 
 	public override void OnJoinedRoom()
 	{
 		RoomMenu roomMenu = CanvasManager.Instance.getMenu<RoomMenu>("room");
 		if (roomMenu == null) return;
+
+		if (PhotonNetwork.LocalPlayer == PhotonNetwork.MasterClient)
+		{
+			PhotonNetwork.CurrentRoom.SetCustomProperty("ActiveTeam", TEAM.White);
+		}
 		roomMenu.roomMenuNameGui.text = PhotonNetwork.CurrentRoom.Name;
 		CanvasManager.Instance.openMenu("room");
 
@@ -95,7 +103,6 @@ public class Luncher : MonoBehaviourPunCallbacks
 	public override void OnRoomListUpdate(List<RoomInfo> roomList)
 	{
 		RoomListMenu roomListMenu = CanvasManager.Instance.getMenu<RoomListMenu>("roomListMenu");
-		Debug.Log($"{roomList.Count}");
 		foreach (Transform child in roomListMenu.roomsContainer)
 		{
 			Destroy(child.gameObject);
@@ -103,7 +110,6 @@ public class Luncher : MonoBehaviourPunCallbacks
 
 		foreach (RoomInfo room in roomList)
 		{
-			Debug.Log($"{room.Name}");
 			if (room.RemovedFromList) continue;
 			Instantiate(roomListMenu.roomPrefab, roomListMenu.roomsContainer).GetComponent<RoomItem>().SetUp(room);
 		}
@@ -137,5 +143,32 @@ public class Luncher : MonoBehaviourPunCallbacks
 	{
 		// 1 is the index of the scene we want to load in the build menu
 		PhotonNetwork.LoadLevel(1);
+	}
+
+	public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
+	{
+		Debug.LogError($"{propertiesThatChanged["ActiveTeam"]}");
+	}
+}
+
+
+
+
+public static class PhotonRoomExtensions
+{
+	public static void SetCustomProperty(this Room room, string propName, object value)
+	{
+		ExitGames.Client.Photon.Hashtable prop = new ExitGames.Client.Photon.Hashtable();
+		prop.Add(propName, value);
+		room.SetCustomProperties(prop);
+	}
+
+	public static void SetCustomProperty(this Room room, string propName, object value, object oldValue)
+	{
+		ExitGames.Client.Photon.Hashtable prop = new ExitGames.Client.Photon.Hashtable();
+		prop.Add(propName, value);
+		ExitGames.Client.Photon.Hashtable oldvalueProp = new ExitGames.Client.Photon.Hashtable();
+		oldvalueProp.Add(propName, oldValue);
+		room.SetCustomProperties(prop, oldvalueProp);
 	}
 }
