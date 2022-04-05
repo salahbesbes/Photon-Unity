@@ -3,12 +3,12 @@ using UnityEngine;
 public class SetParent : MonoBehaviour
 {
 
-	PlayerControler unit;
+	UnitPhoton unit;
 
 	private void Start()
 	{
 
-		unit = GetComponent<PlayerControler>();
+		unit = GetComponent<UnitPhoton>();
 		if (unit.photonView.IsMine)
 		{
 			gameObject.transform.parent = unit.parent;

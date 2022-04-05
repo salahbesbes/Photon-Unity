@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviour, IOnEventCallback
+public class GameStateManager : MonoBehaviour, IOnEventCallback
 {
 	private PhotonView PV;
 	public TEAM MyTeam { get; private set; }
@@ -13,41 +13,57 @@ public class PlayerManager : MonoBehaviour, IOnEventCallback
 
 
 	public RoomManager roomManager { get; private set; }
-	[SerializeField] private Transform unitHolder;
-	[SerializeField] private List<PlayerControler> units = new List<PlayerControler>();
+	//[SerializeField] private Transform unitHolder;
+	[SerializeField] private List<UnitPhoton> units = new List<UnitPhoton>();
 
-	public BaseState<PlayerManager> State { get; private set; }
+	public BaseState<GameStateManager> State { get; private set; }
 	public PlayingState playingState { get; private set; } = new PlayingState();
 	public PauseState pauseState { get; private set; } = new PauseState();
 
+	public List<Vector3> positions = new List<Vector3>();
 
-	private void Awake()
+
+
+	private UnitPhoton _selectedUnit;
+
+	public UnitPhoton SelectedUnit
 	{
-		generateUnits();
+		get => _selectedUnit; set
+		{
+			_selectedUnit = value;
 
+			//Debug.Log($"Selected  {SelectedUnit} ");
+		}
 	}
+
+
+
+	//private void Awake()
+	//{
+	//	generateUnits();
+
+	//}
 
 	public void generateUnits()
 	{
 
-		unitHolder = Instantiate(unitHolder, unitHolder.position, unitHolder.rotation, transform);
-		foreach (Transform child in unitHolder)
+		foreach (Vector3 pos in positions)
 		{
-			PlayerControler unit = CreateController("PlayerController", child.position);
-			unit.parent = child;
+			UnitPhoton unit = CreateController("PlayerController", pos);
+			unit.parent = transform;
+			unit.setDependencies(this);
 			units.Add(unit);
 
 		}
 
 
-
 	}
 
-	private PlayerControler CreateController(string unitModelName, Vector3 ancherPoint, Quaternion? rotation = null)
+	private UnitPhoton CreateController(string unitModelName, Vector3 ancherPoint, Quaternion? rotation = null)
 	{
 		Quaternion rot = rotation ?? Quaternion.identity;
 		GameObject go = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", unitModelName), ancherPoint, rot);
-		return go.GetComponent<PlayerControler>();
+		return go.GetComponent<UnitPhoton>();
 	}
 
 
@@ -85,32 +101,42 @@ public class PlayerManager : MonoBehaviour, IOnEventCallback
 		State.Update(this);
 	}
 
-	private void init()
+
+
+	private void initGameManager()
 	{
 		SwitchState(playingState);
+
 	}
 	public void setDependencices(TEAM team, TEAM activeTeam, RoomManager roomManager)
 	{
 		MyTeam = team;
 		ActiveTeam = activeTeam;
 		this.roomManager = roomManager;
-		init();
+
+		initGameManager();
+		//initUnits();
 	}
 
+	private void initUnits()
+	{
+		foreach (UnitPhoton unit in units)
+		{
+			//unit.initUnit(this, roomManager);
+		}
+	}
 
 	private void OnEnable()
 	{
 		PhotonNetwork.AddCallbackTarget(this);
-		Debug.Log($"enable called ");
 	}
 
 	private void OnDisable()
 	{
 		PhotonNetwork.RemoveCallbackTarget(this);
-		Debug.Log($"disable called ");
 
 	}
-	public void SwitchState(BaseState<PlayerManager> newState)
+	public void SwitchState(BaseState<GameStateManager> newState)
 	{
 		State?.ExitState(this);
 		State = newState;
@@ -119,7 +145,7 @@ public class PlayerManager : MonoBehaviour, IOnEventCallback
 
 	private void enableUnits(bool BOOL)
 	{
-		foreach (PlayerControler unit in units)
+		foreach (UnitPhoton unit in units)
 		{
 			unit.enabled = BOOL;
 		}

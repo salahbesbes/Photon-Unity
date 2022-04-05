@@ -3,7 +3,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
-public class PlayerControler : MonoBehaviourPunCallbacks
+public class UnitPhoton : MonoBehaviourPunCallbacks
 {
 	private CharacterController controller;
 	private Vector3 playerVelocity;
@@ -24,14 +24,16 @@ public class PlayerControler : MonoBehaviourPunCallbacks
 	public float rotateSpeed = 5.0F;
 
 
-	[SerializeField] public PlayerManager manager { get; private set; }
+	[SerializeField] public GameStateManager gameStateManager { get; private set; }
+	[SerializeField] public RoomManager roomManager { get; private set; }
+	[SerializeField] public PlayerStateManager playerStateManager { get; private set; }
 	public Transform parent;
 
 
 
-	public void setDependencies(PlayerManager manager)
+	public void setDependencies(GameStateManager manager)
 	{
-		this.manager = manager;
+		this.gameStateManager = manager;
 	}
 	public void equipeItem(int _index)
 	{
@@ -70,12 +72,17 @@ public class PlayerControler : MonoBehaviourPunCallbacks
 	{
 		controller = gameObject.AddComponent<CharacterController>();
 
+
 		if (PV.IsMine == false)
 		{
 			enabled = false;
 		}
 		else
 		{
+			playerStateManager = GetComponent<PlayerStateManager>();
+			gameStateManager = GetComponentInParent<GameStateManager>();
+			roomManager = gameStateManager.roomManager;
+			playerStateManager.initPlayerManager(this);
 			equipeItem(0);
 		}
 	}
@@ -115,9 +122,13 @@ public class PlayerControler : MonoBehaviourPunCallbacks
 		verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90f, 90f);
 		cameraHolder.transform.localEulerAngles = Vector3.left * verticalLookRotation;
 	}
+
+	//public void initUnit(GameStateManager gameStateManager, RoomManager roomManager)
+	//{
+	//	this.gameStateManager = gameStateManager;
+	//	this.roomManager = roomManager;
+	//	playerStateManager = GetComponent<PlayerStateManager>();
+	//	playerStateManager.initPlayerManager(this);
+	//}
 }
 
-public class PunTurnManager : MonoBehaviourPunCallbacks
-
-{
-}

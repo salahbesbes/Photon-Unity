@@ -68,3 +68,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitHolder: {fileID: 1183578258020005289, guid: 63f2eb4c0ba22574b8d4f941bc7b2b26, type: 3}
+  units: []
+  positions:
+  - {x: 20, y: 6.5, z: 5}
+  - {x: 20, y: 6.5, z: -2}
