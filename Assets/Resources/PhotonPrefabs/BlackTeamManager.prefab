@@ -67,8 +67,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4af8077a6d022e43a6973f4fc77c53c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitHolder: {fileID: 5341496135438241940, guid: 86f6d4322f6c23d47b08c0bc36843c80, type: 3}
+  parent: {fileID: 0}
   units: []
   positions:
   - {x: -20, y: 6, z: 3}
-  - {x: -20, y: 6, z: 5}
+  unitPrefab: {fileID: 4502419329198670641, guid: 00c9943f866d6734080d0e5956ec78e8, type: 3}
+  _enemyUnits: []

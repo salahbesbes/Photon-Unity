@@ -5,13 +5,14 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class GameStateManager : MonoBehaviour, IOnEventCallback
+public class GameStateManager : MonoBehaviourPunCallbacks, IOnEventCallback
 {
 	private PhotonView PV;
 	public TEAM MyTeam { get; private set; }
+	public TEAM opponentTeam { get; private set; }
 	public TEAM ActiveTeam { get; private set; }
 
-
+	public Transform parent;
 	public RoomManager roomManager { get; private set; }
 	//[SerializeField] private Transform unitHolder;
 	[SerializeField] private List<UnitPhoton> units = new List<UnitPhoton>();
@@ -22,6 +23,8 @@ public class GameStateManager : MonoBehaviour, IOnEventCallback
 
 	public List<Vector3> positions = new List<Vector3>();
 
+
+	public GameObject unitPrefab;
 
 
 	private UnitPhoton _selectedUnit;
@@ -37,6 +40,16 @@ public class GameStateManager : MonoBehaviour, IOnEventCallback
 	}
 
 
+	[SerializeField] private List<UnitPhoton> _enemyUnits;
+	public List<UnitPhoton> EnemyUnits { get; set; } = new List<UnitPhoton>();
+
+
+
+	private void Start()
+	{
+		Debug.Log($"parent {parent}");
+		transform.SetParent(parent);
+	}
 
 	//private void Awake()
 	//{
@@ -49,9 +62,8 @@ public class GameStateManager : MonoBehaviour, IOnEventCallback
 
 		foreach (Vector3 pos in positions)
 		{
-			UnitPhoton unit = CreateController("PlayerController", pos);
-			unit.parent = transform;
-			unit.setDependencies(this);
+			UnitPhoton unit = CreateController(unitPrefab.name, pos);
+			unit.setDependencies(this, transform);
 			units.Add(unit);
 
 		}
@@ -96,6 +108,10 @@ public class GameStateManager : MonoBehaviour, IOnEventCallback
 
 		}
 	}
+
+
+
+
 	private void Update()
 	{
 		State.Update(this);
@@ -103,19 +119,20 @@ public class GameStateManager : MonoBehaviour, IOnEventCallback
 
 
 
-	private void initGameManager()
+	public void initGameManager()
 	{
+
+		//transform.SetParent(parent);
 		SwitchState(playingState);
 
 	}
-	public void setDependencices(TEAM team, TEAM activeTeam, RoomManager roomManager)
+	public void setDependencices(TEAM team, TEAM opponentTeam, TEAM activeTeam, RoomManager roomManager, Transform parent)
 	{
 		MyTeam = team;
 		ActiveTeam = activeTeam;
 		this.roomManager = roomManager;
-
-		initGameManager();
-		//initUnits();
+		this.opponentTeam = opponentTeam;
+		this.parent = parent;
 	}
 
 	private void initUnits()
@@ -126,13 +143,15 @@ public class GameStateManager : MonoBehaviour, IOnEventCallback
 		}
 	}
 
-	private void OnEnable()
+	public override void OnEnable()
 	{
+		base.OnEnable();
 		PhotonNetwork.AddCallbackTarget(this);
 	}
 
-	private void OnDisable()
+	public override void OnDisable()
 	{
+		base.OnDisable();
 		PhotonNetwork.RemoveCallbackTarget(this);
 
 	}

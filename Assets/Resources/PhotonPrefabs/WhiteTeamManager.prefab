@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3747229134236546702}
   - component: {fileID: 8052664053126711738}
   - component: {fileID: 6701963433062625639}
+  - component: {fileID: 5951674187192957220}
   m_Layer: 0
   m_Name: WhiteTeamManager
   m_TagString: Untagged
@@ -67,8 +68,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4af8077a6d022e43a6973f4fc77c53c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitHolder: {fileID: 1183578258020005289, guid: 63f2eb4c0ba22574b8d4f941bc7b2b26, type: 3}
+  parent: {fileID: 0}
   units: []
   positions:
   - {x: 20, y: 6.5, z: 5}
-  - {x: 20, y: 6.5, z: -2}
+  unitPrefab: {fileID: 4502419329198670641, guid: 70b2a6330c4f4da4d80571533c387d4c, type: 3}
+  _enemyUnits: []
+--- !u!114 &5951674187192957220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8863956397558835814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7be65dcc16d188a40a3d886d207fd353, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

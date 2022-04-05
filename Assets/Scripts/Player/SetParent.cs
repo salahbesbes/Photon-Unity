@@ -4,20 +4,43 @@ public class SetParent : MonoBehaviour
 {
 
 	UnitPhoton unit;
+	GameStateManager gameStateManager;
 
 	private void Start()
 	{
 
 		unit = GetComponent<UnitPhoton>();
-		if (unit.photonView.IsMine)
+		gameStateManager = GetComponent<GameStateManager>();
+		if (unit != null)
 		{
-			gameObject.transform.parent = unit.parent;
+			if (unit.photonView.IsMine)
+			{
+
+				gameObject.transform.parent = unit.parent;
+				return;
+			}
+			else
+			{
+				gameObject.transform.parent = GameObject.FindWithTag("opponnetTeam").transform.GetChild(0);
+				return;
+			}
 
 		}
-		else
+		else if (gameStateManager != null)
 		{
-			gameObject.transform.parent = GameObject.FindWithTag("opponnetTeam").transform;
+			if (gameStateManager.photonView.IsMine)
+			{
 
+				gameObject.transform.parent = gameStateManager.parent;
+				return;
+			}
+
+			else
+			{
+				gameObject.transform.parent = GameObject.FindWithTag("opponnetTeam").transform;
+				return;
+
+			}
 		}
 	}
 

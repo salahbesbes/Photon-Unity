@@ -16,7 +16,7 @@ public class UnitPhoton : MonoBehaviourPunCallbacks
 	private float verticalLookRotation;
 	public float mouseSensitivity = 2;
 
-	private PhotonView PV;
+	public PhotonView PV { get; private set; }
 	public Item[] items;
 	private int itemIndex, prevItemIndex = -1;
 
@@ -31,9 +31,10 @@ public class UnitPhoton : MonoBehaviourPunCallbacks
 
 
 
-	public void setDependencies(GameStateManager manager)
+	public void setDependencies(GameStateManager manager, Transform parent)
 	{
 		this.gameStateManager = manager;
+		this.parent = parent;
 	}
 	public void equipeItem(int _index)
 	{
@@ -75,6 +76,12 @@ public class UnitPhoton : MonoBehaviourPunCallbacks
 
 		if (PV.IsMine == false)
 		{
+			playerStateManager = GetComponent<PlayerStateManager>();
+			//gameStateManager = GetComponentInParent<GameStateManager>();
+			//roomManager = gameStateManager.roomManager;
+			//playerStateManager.initPlayerManager(this, gameStateManager);
+
+			playerStateManager.enabled = false;
 			enabled = false;
 		}
 		else
@@ -82,7 +89,7 @@ public class UnitPhoton : MonoBehaviourPunCallbacks
 			playerStateManager = GetComponent<PlayerStateManager>();
 			gameStateManager = GetComponentInParent<GameStateManager>();
 			roomManager = gameStateManager.roomManager;
-			playerStateManager.initPlayerManager(this);
+			playerStateManager.initPlayerManager(this, gameStateManager);
 			equipeItem(0);
 		}
 	}

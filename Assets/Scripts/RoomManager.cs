@@ -1,6 +1,7 @@
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
+using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -24,7 +25,6 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
 
 
-
 	private void Awake()
 	{
 		if (Instance == null)
@@ -33,8 +33,12 @@ public class RoomManager : MonoBehaviourPunCallbacks
 			Destroy(gameObject);
 	}
 
-
-
+	private GameStateManager instantiateGameManager(string unitModelName, Vector3 ancherPoint, Quaternion? rotation = null)
+	{
+		Quaternion rot = rotation ?? Quaternion.identity;
+		GameObject go = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", unitModelName), ancherPoint, rot);
+		return go.GetComponent<GameStateManager>();
+	}
 	private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 	{
 		Debug.Log($"{scene.name} is loaded");
@@ -52,22 +56,23 @@ public class RoomManager : MonoBehaviourPunCallbacks
 				TEAM activeTEAM = (TEAM)PhotonNetwork.CurrentRoom.CustomProperties["ActiveTeam"];
 				if (PhotonNetwork.LocalPlayer == PhotonNetwork.MasterClient)
 				{
-					GameStateManager pm = Instantiate(whiteManagerPrefab, Vector3.zero, Quaternion.identity, MyTeamHolder);
-					pm.setDependencices(TEAM.White, activeTEAM, this);
-					pm.generateUnits();
+					GameStateManager pm = instantiateGameManager(whiteManagerPrefab.name, Vector3.zero);
 					whitePlayer = pm;
-
+					pm.setDependencices(TEAM.White, TEAM.Black, activeTEAM, this, MyTeamHolder);
+					pm.initGameManager();
+					pm.generateUnits();
 					Debug.LogError($"this is master Player ");
 					Debug.LogError($"his team is {pm.MyTeam} and the active team is {whitePlayer.ActiveTeam}");
 
 				}
 				else
 				{
-					GameStateManager pm = Instantiate(blackManagerPrefab, Vector3.zero, Quaternion.identity, MyTeamHolder);
-					pm.setDependencices(TEAM.Black, activeTEAM, this);
+					GameStateManager pm = instantiateGameManager(blackManagerPrefab.name, Vector3.zero);
+					blackPlayer = pm;
+					pm.setDependencices(TEAM.Black, TEAM.White, activeTEAM, this, MyTeamHolder);
+					pm.initGameManager();
 					pm.generateUnits();
 
-					blackPlayer = pm;
 					Debug.LogError($"this is Client");
 					Debug.LogError($"his team is {blackPlayer.MyTeam} and the active team is {blackPlayer.ActiveTeam}");
 

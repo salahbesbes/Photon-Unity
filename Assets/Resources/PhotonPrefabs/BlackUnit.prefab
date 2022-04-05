@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1180598226}
   - component: {fileID: 1180598228}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 3rdPersonCam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,7 +84,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2036252319}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: camHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -119,7 +119,7 @@ GameObject:
   - component: {fileID: 2447939938799849555}
   - component: {fileID: 77335042149163167}
   - component: {fileID: 4918216028707137848}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -216,7 +216,7 @@ GameObject:
   - component: {fileID: 6637759997758769518}
   - component: {fileID: 8962157988410186364}
   - component: {fileID: 6111464530438538641}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Gun1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -318,9 +318,9 @@ GameObject:
   - component: {fileID: -8864440334615376562}
   - component: {fileID: -7456214490075717440}
   - component: {fileID: 2199941250311831756}
-  m_Layer: 0
-  m_Name: PlayerController
-  m_TagString: Untagged
+  m_Layer: 6
+  m_Name: BlackUnit
+  m_TagString: blackTeam
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -470,6 +470,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e869b9b26e359f4ba26bbd42ac39a48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  radius: 10
 --- !u!114 &2199941250311831756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -501,7 +502,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 536552751588082067}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ItemHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -535,7 +536,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5730442800069625329}
   - component: {fileID: 6649945744068302302}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Gun2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -584,7 +585,7 @@ GameObject:
   - component: {fileID: 6017944171219554466}
   - component: {fileID: 1175959557148364529}
   - component: {fileID: 7581989600402212699}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -680,7 +681,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7873245129283361897}
   - component: {fileID: 1056276152987332271}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Gun1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

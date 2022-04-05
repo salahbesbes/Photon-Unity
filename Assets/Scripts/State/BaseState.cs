@@ -21,7 +21,7 @@ public class PlayingState : BaseState<GameStateManager>
 
 	public override void Update(GameStateManager gameContext)
 	{
-		Debug.LogError($"{gameContext.transform.name} update  of {GetType().Name}");
+		//Debug.LogError($"{gameContext.transform.name} update  of {GetType().Name}");
 
 	}
 }
@@ -46,7 +46,7 @@ public class PauseState : BaseState<GameStateManager>
 
 	public override void Update(GameStateManager gameContext)
 	{
-		Debug.LogError($"{gameContext.transform.name} update  of {GetType().Name}");
+		//Debug.LogError($"{gameContext.transform.name} update  of {GetType().Name}");
 	}
 }
 
