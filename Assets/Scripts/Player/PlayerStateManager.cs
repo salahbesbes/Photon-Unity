@@ -38,7 +38,7 @@ public class PlayerStateManager : MonoBehaviour
 
 	private void OnDrawGizmos()
 	{
-		Gizmos.DrawSphere(transform.position, radius);
+		//Gizmos.DrawSphere(transform.position, radius);
 	}
 	public void checkTargetInRange()
 	{

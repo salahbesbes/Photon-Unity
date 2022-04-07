@@ -59,8 +59,8 @@ public class RoomManager : MonoBehaviourPunCallbacks
 					GameStateManager pm = instantiateGameManager(whiteManagerPrefab.name, Vector3.zero);
 					whitePlayer = pm;
 					pm.setDependencices(TEAM.White, TEAM.Black, activeTEAM, this, MyTeamHolder);
-					pm.initGameManager();
 					pm.generateUnits();
+					pm.initGameManager();
 					Debug.LogError($"this is master Player ");
 					Debug.LogError($"his team is {pm.MyTeam} and the active team is {whitePlayer.ActiveTeam}");
 
@@ -70,8 +70,8 @@ public class RoomManager : MonoBehaviourPunCallbacks
 					GameStateManager pm = instantiateGameManager(blackManagerPrefab.name, Vector3.zero);
 					blackPlayer = pm;
 					pm.setDependencices(TEAM.Black, TEAM.White, activeTEAM, this, MyTeamHolder);
-					pm.initGameManager();
 					pm.generateUnits();
+					pm.initGameManager();
 
 					Debug.LogError($"this is Client");
 					Debug.LogError($"his team is {blackPlayer.MyTeam} and the active team is {blackPlayer.ActiveTeam}");

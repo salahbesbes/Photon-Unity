@@ -7,6 +7,8 @@ TagManager:
   - opponnetTeam
   - blackTeam
   - whiteTeam
+  - mug
+  - grass
   layers:
   - Default
   - TransparentFX
@@ -15,7 +17,7 @@ TagManager:
   - Water
   - UI
   - Unit
-  - 
+  - Unwalkable
   - 
   - 
   - 

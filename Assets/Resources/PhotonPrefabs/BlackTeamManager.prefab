@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8863956397558835814}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 1, y: 2, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -70,6 +70,6 @@ MonoBehaviour:
   parent: {fileID: 0}
   units: []
   positions:
-  - {x: -20, y: 6, z: 3}
+  - {x: 2, y: 6, z: 3}
   unitPrefab: {fileID: 4502419329198670641, guid: 00c9943f866d6734080d0e5956ec78e8, type: 3}
   _enemyUnits: []

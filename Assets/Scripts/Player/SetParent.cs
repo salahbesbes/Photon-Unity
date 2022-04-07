@@ -21,7 +21,7 @@ public class SetParent : MonoBehaviour
 			}
 			else
 			{
-				gameObject.transform.parent = GameObject.FindWithTag("opponnetTeam").transform.GetChild(0);
+				//gameObject.transform.parent = GameObject.FindWithTag("opponnetTeam").transform.GetChild(0);
 				return;
 			}
 
