@@ -10,10 +10,10 @@ using UnityEngine.UI;
 public class RoomManager : MonoBehaviourPunCallbacks
 {
 	public static RoomManager Instance;
-	public GameStateManager whiteManagerPrefab;
-	public GameStateManager blackManagerPrefab;
-	GameStateManager whitePlayer;
-	GameStateManager blackPlayer;
+	public MP_GameStateManager whiteManagerPrefab;
+	public MP_GameStateManager blackManagerPrefab;
+	MP_GameStateManager whitePlayer;
+	MP_GameStateManager blackPlayer;
 
 	public TextMeshProUGUI whiteText;
 	public TextMeshProUGUI blackText;
@@ -22,7 +22,8 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
 	public Button switchGameState;
 	public Button switchPlayerState;
-
+	public int whiteTeamManagerId;
+	public int blackTeamManagerId;
 
 
 	private void Awake()
@@ -33,15 +34,18 @@ public class RoomManager : MonoBehaviourPunCallbacks
 			Destroy(gameObject);
 	}
 
-	private GameStateManager instantiateGameManager(string unitModelName, Vector3 ancherPoint, Quaternion? rotation = null)
+
+
+
+	private MP_GameStateManager instantiateGameManager(string unitModelName, Vector3 ancherPoint, object[] instantiateData, Quaternion? rotation = null)
 	{
+
 		Quaternion rot = rotation ?? Quaternion.identity;
-		GameObject go = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", unitModelName), ancherPoint, rot);
-		return go.GetComponent<GameStateManager>();
+		GameObject go = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", unitModelName), ancherPoint, rot, 0, new object[] { instantiateData[0], instantiateData[1], instantiateData[2], instantiateData[3], });
+		return go.GetComponent<MP_GameStateManager>();
 	}
 	private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 	{
-		Debug.Log($"{scene.name} is loaded");
 		// check if we load the scene that have build index 1
 		if (scene.buildIndex == 1)
 		{
@@ -56,26 +60,36 @@ public class RoomManager : MonoBehaviourPunCallbacks
 				TEAM activeTEAM = (TEAM)PhotonNetwork.CurrentRoom.CustomProperties["ActiveTeam"];
 				if (PhotonNetwork.LocalPlayer == PhotonNetwork.MasterClient)
 				{
-					GameStateManager pm = instantiateGameManager(whiteManagerPrefab.name, Vector3.zero);
+
+					object[] dataToInit = new object[4] { TEAM.White, TEAM.Black, activeTEAM, MyTeamHolder.transform.GetComponent<PhotonView>().ViewID };
+					MP_GameStateManager pm = instantiateGameManager(whiteManagerPrefab.name, Vector3.zero, dataToInit);
 					whitePlayer = pm;
-					pm.setDependencices(TEAM.White, TEAM.Black, activeTEAM, this, MyTeamHolder);
+
+
+					// TODO: Share Units to the other player
+					whiteTeamManagerId = pm.photonView.ViewID;
+
+					//pm.setDependencices(TEAM.White, TEAM.Black, activeTEAM, MyTeamHolder);
 					pm.initGameManager();
+
 					pm.generateUnits();
-					Debug.LogError($"this is master Player ");
-					Debug.LogError($"his team is {pm.MyTeam} and the active team is {whitePlayer.ActiveTeam}");
+					//Debug.LogError($"this is master Player ");
+					//Debug.LogError($"his team is {pm.MyTeam} and the active team is {whitePlayer.ActiveTeam}");
 
 				}
 				else
 				{
-					GameStateManager pm = instantiateGameManager(blackManagerPrefab.name, Vector3.zero);
+					object[] dataToInit = new object[4] { TEAM.Black, TEAM.White, activeTEAM, MyTeamHolder.transform.GetComponent<PhotonView>().ViewID };
+					MP_GameStateManager pm = instantiateGameManager(blackManagerPrefab.name, Vector3.zero, dataToInit);
+					blackTeamManagerId = pm.photonView.ViewID;
+
+					PhotonView go = PhotonView.Find((int)PhotonNetwork.MasterClient.CustomProperties["ViewID"]);
+					whitePlayer = go.GetComponent<MP_GameStateManager>();
 					blackPlayer = pm;
-					pm.setDependencices(TEAM.Black, TEAM.White, activeTEAM, this, MyTeamHolder);
+					//pm.setDependencices(TEAM.Black, TEAM.White, activeTEAM, MyTeamHolder);
 					pm.initGameManager();
+
 					pm.generateUnits();
-
-					Debug.LogError($"this is Client");
-					Debug.LogError($"his team is {blackPlayer.MyTeam} and the active team is {blackPlayer.ActiveTeam}");
-
 
 				}
 

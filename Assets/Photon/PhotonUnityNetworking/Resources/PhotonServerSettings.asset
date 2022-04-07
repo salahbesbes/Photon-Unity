@@ -41,6 +41,8 @@ MonoBehaviour:
   - RespawnSpaceship
   - RPC_updateColor
   - RPC_SwitchActiveTeam
+  - letMyOpponentKnowMe
+  - ReceiveEnemyList
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

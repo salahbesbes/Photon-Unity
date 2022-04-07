@@ -1,26 +1,25 @@
 using TMPro;
-using UnityEngine;
 
-public class SelectingEnemy : BaseState<PlayerStateManager>
+public class SelectingEnemy : BaseState<MP_PlayerStateManager>
 {
-	public override void EnterState(PlayerStateManager playerContext)
+	public override void EnterState(MP_PlayerStateManager playerContext)
 	{
-		Debug.Log($"{playerContext.transform.name} enter state {GetType().Name}");
-		playerContext.roomManager.switchPlayerState.onClick.RemoveAllListeners();
-		playerContext.roomManager.switchPlayerState.onClick.AddListener(() => { playerContext.SwitchState(playerContext.doingAction); });
-		playerContext.roomManager.switchPlayerState.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"{GetType().Name}";
+		//Debug.Log($"{playerContext.transform.name} enter state {GetType().Name}");
+		RoomManager.Instance.switchPlayerState.onClick.RemoveAllListeners();
+		RoomManager.Instance.switchPlayerState.onClick.AddListener(() => { playerContext.SwitchState(playerContext.doingAction); });
+		RoomManager.Instance.switchPlayerState.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"{GetType().Name}";
 
 	}
 
-	public override void ExitState(PlayerStateManager playerContext)
+	public override void ExitState(MP_PlayerStateManager playerContext)
 	{
-		Debug.Log($"{playerContext.transform.name} Exit state {GetType().Name}");
+		//Debug.Log($"{playerContext.transform.name} Exit state {GetType().Name}");
 
 	}
 
-	public override void Update(PlayerStateManager playerContext)
+	public override void Update(MP_PlayerStateManager playerContext)
 	{
-		Debug.Log($"{playerContext.transform.name} update state {GetType().Name}");
+		//Debug.Log($"{playerContext.transform.name} update state {GetType().Name}");
 
 	}
 }

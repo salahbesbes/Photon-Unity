@@ -3,7 +3,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
-public class UnitPhoton : MonoBehaviourPunCallbacks
+public class UnitPhoton : MP_PlayerStateManager
 {
 	private CharacterController controller;
 	private Vector3 playerVelocity;
@@ -16,7 +16,6 @@ public class UnitPhoton : MonoBehaviourPunCallbacks
 	private float verticalLookRotation;
 	public float mouseSensitivity = 2;
 
-	public PhotonView PV { get; private set; }
 	public Item[] items;
 	private int itemIndex, prevItemIndex = -1;
 
@@ -24,18 +23,32 @@ public class UnitPhoton : MonoBehaviourPunCallbacks
 	public float rotateSpeed = 5.0F;
 
 
-	[SerializeField] public GameStateManager gameStateManager { get; private set; }
-	[SerializeField] public RoomManager roomManager { get; private set; }
-	[SerializeField] public PlayerStateManager playerStateManager { get; private set; }
-	public Transform parent;
 
 
 
-	public void setDependencies(GameStateManager manager, Transform parent)
+	private void Start()
 	{
-		this.gameStateManager = manager;
-		this.parent = parent;
+		controller = gameObject.AddComponent<CharacterController>();
+		// get data passed when PhotonNetwork.Instantiate is called in GameStateManager
+		gameStateManager = PhotonView.Find((int)photonView.InstantiationData[0]).GetComponent<MP_GameStateManager>();
+
+
+
+		SwitchState(idelState);
+
+		if (photonView.IsMine == false)
+		{
+			gameObject.transform.parent = GameObject.FindWithTag("opponnetTeam").transform.GetChild(0);
+			enabled = false;
+		}
+		else
+		{
+			transform.SetParent(gameStateManager.transform);
+			equipeItem(0);
+		}
 	}
+
+
 	public void equipeItem(int _index)
 	{
 		if (_index == prevItemIndex)
@@ -48,7 +61,7 @@ public class UnitPhoton : MonoBehaviourPunCallbacks
 
 		prevItemIndex = itemIndex;
 
-		if (PV.IsMine)
+		if (photonView.IsMine)
 		{
 			Hashtable hash = new Hashtable();
 			hash.Add("itemIndex", itemIndex);
@@ -58,41 +71,13 @@ public class UnitPhoton : MonoBehaviourPunCallbacks
 
 	public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
 	{
-		if (!PV.IsMine && targetPlayer == PV.Owner)
+		if (!photonView.IsMine && targetPlayer == photonView.Owner)
 		{
 			equipeItem((int)changedProps["itemIndex"]);
 		}
 	}
 
-	private void Awake()
-	{
-		PV = GetComponent<PhotonView>();
-	}
 
-	private void Start()
-	{
-		controller = gameObject.AddComponent<CharacterController>();
-
-
-		if (PV.IsMine == false)
-		{
-			playerStateManager = GetComponent<PlayerStateManager>();
-			//gameStateManager = GetComponentInParent<GameStateManager>();
-			//roomManager = gameStateManager.roomManager;
-			//playerStateManager.initPlayerManager(this, gameStateManager);
-
-			playerStateManager.enabled = false;
-			enabled = false;
-		}
-		else
-		{
-			playerStateManager = GetComponent<PlayerStateManager>();
-			gameStateManager = GetComponentInParent<GameStateManager>();
-			roomManager = gameStateManager.roomManager;
-			playerStateManager.initPlayerManager(this, gameStateManager);
-			equipeItem(0);
-		}
-	}
 
 	private void Update()
 	{
@@ -137,5 +122,11 @@ public class UnitPhoton : MonoBehaviourPunCallbacks
 	//	playerStateManager = GetComponent<PlayerStateManager>();
 	//	playerStateManager.initPlayerManager(this);
 	//}
+
+
+	public override string ToString()
+	{
+		return $"{transform.name}";
+	}
 }
 

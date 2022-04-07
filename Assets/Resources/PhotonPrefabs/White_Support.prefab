@@ -315,11 +315,9 @@ GameObject:
   - component: {fileID: 3087761526006867200}
   - component: {fileID: 5111687436760904474}
   - component: {fileID: 982304015918371267}
-  - component: {fileID: -8864440334615376562}
-  - component: {fileID: -7456214490075717440}
   - component: {fileID: 2199941250311831756}
   m_Layer: 6
-  m_Name: WhiteUnit
+  m_Name: White_Support
   m_TagString: whiteTeam
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -333,7 +331,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4502419329198670641}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 4, y: 3, z: 6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -446,31 +444,6 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
---- !u!114 &-8864440334615376562
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4502419329198670641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7be65dcc16d188a40a3d886d207fd353, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &-7456214490075717440
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4502419329198670641}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e869b9b26e359f4ba26bbd42ac39a48, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: 10
 --- !u!114 &2199941250311831756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -483,6 +456,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfe4a8c068aae9446be25c7c095cfdf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  radius: 10
   playerSpeed: 10
   jumpHeight: 10
   cameraHolder: {fileID: 2036252319}
@@ -492,7 +466,6 @@ MonoBehaviour:
   - {fileID: 6649945744068302302}
   speed: 10
   rotateSpeed: 5
-  parent: {fileID: 0}
 --- !u!1 &5338825033736768724
 GameObject:
   m_ObjectHideFlags: 0
