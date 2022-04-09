@@ -20,18 +20,18 @@ public class NodeGrid : MonoBehaviour
 
 	[HideInInspector]
 	public float nodeRadius;
-
+	[Range(0.1f, 10)]
 	public float nodeSize = 1;
 	private LayerMask playerLayer;
 	private LayerMask Unwalkable;
 
 	[HideInInspector]
-	public int width, height;
+	public float width, height;
 
 	//public Vector2 wordSizeGrid;
-	private List<Tile> tiles = new List<Tile>();
+	public List<Tile> tiles { get; private set; } = new List<Tile>();
 	public Transform quadHolder;
-
+	public Tile GroundTilePrefab;
 	/// <summary>
 	/// move the unit toward the destination var sent from the grid to Gridpath var. this
 	/// methode start on mouse douwn frame and the player start moving on the next frame until
@@ -165,7 +165,7 @@ public class NodeGrid : MonoBehaviour
 			string[] collidableLayers = { "Unwalkable", "Unit" };
 			int layerToCheck = LayerMask.GetMask(collidableLayers);
 			node.isObstacle = Physics.CheckSphere(node.coord, nodeSize / 2, layerToCheck);
-			node.color = node.isObstacle ? Color.red : Color.cyan;
+			node.color = node.isObstacle ? Color.red : Color.black;
 			node.inRange = false;
 			node.firstRange = false;
 			node.groundTile.GetComponent<MeshRenderer>().material.SetColor("_BaseColor", node.color);
@@ -194,10 +194,11 @@ public class NodeGrid : MonoBehaviour
 			//turnPoints = new Vector3[0];
 			Instance = this;
 			nodeRadius = nodeSize / 2;
-			height = Mathf.RoundToInt(transform.localScale.z * 10) / (int)nodeSize;
-			width = Mathf.RoundToInt(transform.localScale.x * 10) / (int)nodeSize;
-			graph = new Node[width, height];
+			height = Mathf.RoundToInt(transform.localScale.z * 10) / nodeSize;
+			width = Mathf.RoundToInt(transform.localScale.x * 10) / nodeSize;
+			graph = new Node[(int)width, (int)height];
 			buttonLeft = transform.position - (Vector3.right * transform.localScale.x * 5) - (Vector3.forward * transform.localScale.z * 5);
+			Debug.Log($"grid [{width},{height}]");
 			generateGrid();
 			//start = graph[0, 0];
 
@@ -224,7 +225,15 @@ public class NodeGrid : MonoBehaviour
 				// create node
 				graph[x, y] = new Node(nodeCoord, x, y);
 				float quadSize = nodeSize / transform.localScale.x;
-				new Tile(graph[x, y], quadHolder, tiles, quadSize);
+				Vector3 offsetCreation = new Vector3(nodeRadius, 0, nodeRadius);
+				Tile newTile = Instantiate(GroundTilePrefab, graph[x, y].coord - offsetCreation, Quaternion.identity, quadHolder);
+				newTile.node = graph[x, y];
+				newTile.size = quadSize;
+				newTile.transform.localScale = new Vector3(quadSize, quadSize, quadSize);
+				graph[x, y].groundTile = newTile.gameObject;
+				graph[x, y].tile = newTile;
+
+				//new Tile(graph[x, y], quadHolder, tiles, quadSize);
 				// project a sphere to check with the Layer Unwalkable if some thing
 				// with the layer Unwalkable above it
 				string[] collidableLayers = { "Unwalkable", "Enemy", "Player", "Default" };
@@ -242,8 +251,8 @@ public class NodeGrid : MonoBehaviour
 				count++;
 				//graph[x, y].isObstacle = hitColliders.Length > 0 ? true : false;
 			}
-
 		}
+		Debug.Log($"  {count} nodes");
 		//calculate neighbours and create a cover for each node
 		for (int x = 0; x < height; x++)
 		{
@@ -284,14 +293,14 @@ public class NodeGrid : MonoBehaviour
 		int localheight = Mathf.RoundToInt(transform.localScale.z * 10);
 		int localwidth = Mathf.RoundToInt(transform.localScale.x * 10);
 		buttonLeft = transform.position - (Vector3.right * transform.localScale.x * 5) - (Vector3.forward * transform.localScale.z * 5);
-
-		for (int x = 0; x < localheight; x += (int)nodeSize)
+		//Debug.Log($"grid [{localwidth / nodeSize},{localheight / nodeSize}]");
+		for (float x = 0; x < localheight; x += nodeSize)
 		{
-			Debug.DrawLine(buttonLeft + new Vector3(0, 0.02f, x), new Vector3(localwidth + buttonLeft.x, 0.02f, (x + buttonLeft.z)), Color.black);
+			Debug.DrawLine(buttonLeft + new Vector3(0, 0.00f, x), new Vector3(localwidth + buttonLeft.x, 0.00f, (x + buttonLeft.z)), new Color(0, 0, 0, 0.5f));
 		}
-		for (int x = 0; x < localwidth; x += (int)nodeSize)
+		for (float x = 0; x < localwidth; x += nodeSize)
 		{
-			Debug.DrawLine(buttonLeft + new Vector3(x, 0.02f, 0), new Vector3(x + buttonLeft.x, 0.02f, (localheight + buttonLeft.z)), Color.black);
+			Debug.DrawLine(buttonLeft + new Vector3(x, 0.00f, 0), new Vector3(x + buttonLeft.x, 0.00f, (localheight + buttonLeft.z)), new Color(0, 0, 0, 0.5f));
 		}
 
 		//resetGrid();

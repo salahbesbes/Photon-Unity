@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class Tile
+public class Tile : MonoBehaviour
 {
 	public Transform obj;
 	public Node node;
@@ -12,8 +12,9 @@ public class Tile
 	public List<Cover> listOfActiveCover;
 	public bool mouseOnTile = false;
 	private Transform parent;
-	private float size = 1;
-
+	[HideInInspector]
+	public float size = 1;
+	[HideInInspector]
 	public float offset = 2f;
 
 
@@ -31,19 +32,24 @@ public class Tile
 		return hit.transform.gameObject;
 	}
 
-	public Tile(Node node, Transform parent, List<Tile> listTiles, float quadsize)
+	//public Tile(Node node, Transform parent, List<Tile> listTiles, float quadsize)
+	//{
+	//	// create Quad
+	//	size = quadsize;
+	//	this.parent = parent;
+	//	this.node = node;
+	//	node.groundTile = GameObject
+	//	obj = getPrefabOnTopOfTheTile();
+	//	listTiles.Add(this);
+	//	node.tile = this;
+	//}
+	private void Awake()
 	{
-		// create Quad
-		size = quadsize;
-		this.parent = parent;
-		this.node = node;
-		node.groundTile = getPrefabOnTopOfTheNode(node);
 		obj = getPrefabOnTopOfTheTile();
-		listTiles.Add(this);
-		node.tile = this;
+		transform.localScale = new Vector3(size, size, size);
 		listOfActiveCover = new List<Cover>();
-	}
 
+	}
 	public Transform getPrefabOnTopOfTheTile()
 	{
 
