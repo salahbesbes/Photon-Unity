@@ -57,11 +57,21 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Name: 
   m_EditorClassIdentifier: 
-  _units:
-  - {fileID: 2199941250311831756, guid: 34d3eb5c6679e634496afb01d1b1fb8d, type: 3}
-  - {fileID: 2199941250311831756, guid: 70b2a6330c4f4da4d80571533c387d4c, type: 3}
-  _enemyUnits:
-  - {fileID: 2199941250311831756, guid: d53a5f17b33037046a298b49e230991c, type: 3}
-  - {fileID: 2199941250311831756, guid: 00c9943f866d6734080d0e5956ec78e8, type: 3}
-  - {fileID: 2199941250311831756, guid: 2aa40522b40d4f54caf3d6e1a34d6955, type: 3}
-  _selectedUnit: {fileID: 0}
+  parent: {fileID: 0}
+  units: []
+  positions:
+  - {x: 20, y: 6.5, z: 5}
+  unitPrefab: {fileID: 4502419329198670641, guid: 70b2a6330c4f4da4d80571533c387d4c, type: 3}
+  _enemyUnits: []
+--- !u!114 &5951674187192957220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8863956397558835814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7be65dcc16d188a40a3d886d207fd353, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

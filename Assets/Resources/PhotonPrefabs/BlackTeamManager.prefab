@@ -57,3 +57,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Name: 
   m_EditorClassIdentifier: 
+  parent: {fileID: 0}
+  units: []
+  positions:
+  - {x: -20, y: 6, z: 3}
+  unitPrefab: {fileID: 4502419329198670641, guid: 00c9943f866d6734080d0e5956ec78e8, type: 3}
+  _enemyUnits: []

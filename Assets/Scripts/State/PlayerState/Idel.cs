@@ -4,10 +4,10 @@ public class Idel : BaseState<SP_PlayerStateManager>
 {
 	public override void EnterState(SP_PlayerStateManager playerContext)
 	{
-		//Debug.Log($"{playerContext.transform.name} enter state {GetType().Name}");
-		RoomManager.Instance.switchPlayerState.onClick.RemoveAllListeners();
-		RoomManager.Instance.switchPlayerState.onClick.AddListener(() => { playerContext.SwitchState(playerContext.selectingEnemy); });
-		RoomManager.Instance.switchPlayerState.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"{GetType().Name}";
+		Debug.LogError($"{playerContext.transform.name} enter state {playerContext.CurrentState}");
+		playerContext.roomManager.switchPlayerState.onClick.RemoveAllListeners();
+		playerContext.roomManager.switchPlayerState.onClick.AddListener(() => { playerContext.SwitchState(playerContext.selectingEnemy); });
+		playerContext.roomManager.switchPlayerState.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"{GetType().Name}";
 
 	}
 
@@ -17,9 +17,14 @@ public class Idel : BaseState<SP_PlayerStateManager>
 
 	}
 
-	public override void Update(SP_PlayerStateManager playerContext)
+	public override void Update(PlayerStateManager playerContext)
 	{
-		//Debug.Log($"{playerContext.transform.name} update state {GetType().Name}");
+
+		playerContext.checkTargetInRange();
+		if (Input.GetKeyDown(KeyCode.LeftShift))
+		{
+			playerContext.SelectNextTarget();
+		}
 
 	}
 }
