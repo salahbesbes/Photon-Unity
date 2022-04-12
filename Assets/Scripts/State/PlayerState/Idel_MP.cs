@@ -1,4 +1,5 @@
 using TMPro;
+using UnityEngine;
 
 public class Idel_MP : BaseState<MP_PlayerStateManager>
 {
@@ -19,7 +20,7 @@ public class Idel_MP : BaseState<MP_PlayerStateManager>
 
 	public override void Update(MP_PlayerStateManager playerContext)
 	{
-		//Debug.Log($"{playerContext.State}");
+		Debug.Log($"{playerContext.State}");
 		playerContext.checkTargetInRange();
 
 
@@ -27,3 +28,21 @@ public class Idel_MP : BaseState<MP_PlayerStateManager>
 }
 
 
+public class Idel : BaseState<SP_PlayerStateManager>
+{
+	public override void EnterState(SP_PlayerStateManager playerContext)
+	{
+
+	}
+
+	public override void ExitState(SP_PlayerStateManager playerContext)
+	{
+		//Debug.Log($"{playerContext.transform.name} Exit state {GetType().Name}");
+
+	}
+
+	public override void Update(SP_PlayerStateManager playerContext)
+	{
+
+	}
+}

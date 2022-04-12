@@ -64,14 +64,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
 				if (PhotonNetwork.LocalPlayer == PhotonNetwork.MasterClient)
 				{
 
-				}
-				else
-				{
-					GameStateManager pm = instantiateGameManager(blackManagerPrefab.name, Vector3.zero);
-					blackPlayer = pm;
-					pm.setDependencices(TEAM.Black, TEAM.White, activeTEAM, this, MyTeamHolder);
-					pm.initGameManager();
-					pm.generateUnits();
+					LocalPlayer.SetDependenties(WhiteUnits, BlackUnits, TEAM.White);
+					LocalPlayer.initGameManager();
+
 
 
 

@@ -24,3 +24,23 @@ public class DoingAction_MP : BaseState<MP_PlayerStateManager>
 	}
 }
 
+public class DoingAction : BaseState<SP_PlayerStateManager>
+{
+	public override void EnterState(SP_PlayerStateManager playerContext)
+	{
+		//Debug.Log($"{playerContext.transform.name} enter state {GetType().Name}");
+
+	}
+
+	public override void ExitState(SP_PlayerStateManager playerContext)
+	{
+		//Debug.Log($"{playerContext.transform.name} Exit state {GetType().Name}");
+
+	}
+
+	public override void Update(SP_PlayerStateManager playerContext)
+	{
+		//Debug.Log($"{playerContext.transform.name} update state {GetType().Name}");
+
+	}
+}
