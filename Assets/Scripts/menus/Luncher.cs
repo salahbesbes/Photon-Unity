@@ -71,7 +71,7 @@ public class Luncher : MonoBehaviourPunCallbacks
 
 		if (PhotonNetwork.LocalPlayer == PhotonNetwork.MasterClient)
 		{
-			PhotonNetwork.CurrentRoom.SetCustomProperty("ActiveTeam", TEAM.White);
+			PhotonNetwork.CurrentRoom.SetTurn(TEAM.White);
 		}
 		roomMenu.roomMenuNameGui.text = PhotonNetwork.CurrentRoom.Name;
 		CanvasManager.Instance.openMenu("room");

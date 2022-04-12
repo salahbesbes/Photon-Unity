@@ -94,7 +94,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
 public enum TEAM
 {
-	None,
+	None = 0,
 	Black,
 	White
 }

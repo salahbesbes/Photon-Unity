@@ -23,28 +23,35 @@ public class UnitPhoton : MP_PlayerStateManager
 	public float rotateSpeed = 5.0F;
 
 
-
-
-
-	private void Start()
+	public override void Awake()
 	{
+
 		controller = gameObject.AddComponent<CharacterController>();
 		// get data passed when PhotonNetwork.Instantiate is called in GameStateManager
 		gameStateManager = PhotonView.Find((int)photonView.InstantiationData[0]).GetComponent<MP_GameStateManager>();
-
-
-
 		SwitchState(idelState);
+
+	}
+
+	private void Start()
+	{
+
+
 
 		if (photonView.IsMine == false)
 		{
-			gameObject.transform.parent = GameObject.FindWithTag("opponnetTeam").transform.GetChild(0);
+			GameObject.FindWithTag("opponnetTeam").transform.position = gameStateManager.transform.position;
+			gameObject.transform.parent = GameObject.FindWithTag("opponnetTeam").transform;
 			enabled = false;
 		}
 		else
 		{
 			transform.SetParent(gameStateManager.transform);
 			equipeItem(0);
+
+
+			if (gameStateManager.SelectedUnit == this)
+				enabled = true;
 		}
 	}
 
@@ -126,7 +133,7 @@ public class UnitPhoton : MP_PlayerStateManager
 
 	public override string ToString()
 	{
-		return $"{transform.name}";
+		return $"{transform.name} with id {photonView.ViewID}";
 	}
 }
 

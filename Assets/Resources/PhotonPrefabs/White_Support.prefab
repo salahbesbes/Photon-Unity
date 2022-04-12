@@ -456,6 +456,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfe4a8c068aae9446be25c7c095cfdf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gameManager: {fileID: 0}
   radius: 10
   playerSpeed: 10
   jumpHeight: 10

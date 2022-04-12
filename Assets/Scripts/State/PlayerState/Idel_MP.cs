@@ -22,10 +22,7 @@ public class Idel_MP : BaseState<MP_PlayerStateManager>
 	{
 		Debug.Log($"{playerContext.State}");
 		playerContext.checkTargetInRange();
-		if (Input.GetKeyDown(KeyCode.LeftShift))
-		{
-			//playerContext.SelectNextTarget();
-		}
+
 
 	}
 }

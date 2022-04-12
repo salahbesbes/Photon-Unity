@@ -1,6 +1,5 @@
-using ExitGames.Client.Photon;
 using Photon.Pun;
-using Photon.Realtime;
+using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
@@ -10,10 +9,10 @@ using UnityEngine.UI;
 public class RoomManager : MonoBehaviourPunCallbacks
 {
 	public static RoomManager Instance;
-	public MP_GameStateManager whiteManagerPrefab;
-	public MP_GameStateManager blackManagerPrefab;
-	MP_GameStateManager whitePlayer;
-	MP_GameStateManager blackPlayer;
+	//public MP_GameStateManager whiteManagerPrefab;
+	//public MP_GameStateManager blackManagerPrefab;
+	public MP_GameStateManager LocalPlayer;
+	public MP_GameStateManager Opponent;
 
 	public TextMeshProUGUI whiteText;
 	public TextMeshProUGUI blackText;
@@ -25,6 +24,11 @@ public class RoomManager : MonoBehaviourPunCallbacks
 	public int whiteTeamManagerId;
 	public int blackTeamManagerId;
 
+
+	public List<UnitPhoton> BlackUnits = new List<UnitPhoton>();
+
+
+	public List<UnitPhoton> WhiteUnits = new List<UnitPhoton>();
 
 	private void Awake()
 	{
@@ -57,40 +61,20 @@ public class RoomManager : MonoBehaviourPunCallbacks
 			{
 				//GameObject controller = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity);
 				//PlayerManager pm = controller.GetComponent<PlayerManager>();
-				TEAM activeTEAM = (TEAM)PhotonNetwork.CurrentRoom.CustomProperties["ActiveTeam"];
 				if (PhotonNetwork.LocalPlayer == PhotonNetwork.MasterClient)
 				{
 
-					object[] dataToInit = new object[4] { TEAM.White, TEAM.Black, activeTEAM, MyTeamHolder.transform.GetComponent<PhotonView>().ViewID };
-					MP_GameStateManager pm = instantiateGameManager(whiteManagerPrefab.name, Vector3.zero, dataToInit);
-					whitePlayer = pm;
+					LocalPlayer.SetDependenties(WhiteUnits, BlackUnits, TEAM.White);
+					LocalPlayer.initGameManager();
 
 
-					// TODO: Share Units to the other player
-					whiteTeamManagerId = pm.photonView.ViewID;
 
-					//pm.setDependencices(TEAM.White, TEAM.Black, activeTEAM, MyTeamHolder);
-					pm.initGameManager();
-
-					pm.generateUnits();
-					//Debug.LogError($"this is master Player ");
-					//Debug.LogError($"his team is {pm.MyTeam} and the active team is {whitePlayer.ActiveTeam}");
 
 				}
 				else
 				{
-					object[] dataToInit = new object[4] { TEAM.Black, TEAM.White, activeTEAM, MyTeamHolder.transform.GetComponent<PhotonView>().ViewID };
-					MP_GameStateManager pm = instantiateGameManager(blackManagerPrefab.name, Vector3.zero, dataToInit);
-					blackTeamManagerId = pm.photonView.ViewID;
-
-					PhotonView go = PhotonView.Find((int)PhotonNetwork.MasterClient.CustomProperties["ViewID"]);
-					whitePlayer = go.GetComponent<MP_GameStateManager>();
-					blackPlayer = pm;
-					//pm.setDependencices(TEAM.Black, TEAM.White, activeTEAM, MyTeamHolder);
-					pm.initGameManager();
-
-					pm.generateUnits();
-
+					LocalPlayer.SetDependenties(BlackUnits, WhiteUnits, TEAM.Black);
+					LocalPlayer.initGameManager();
 				}
 
 			}
@@ -98,32 +82,6 @@ public class RoomManager : MonoBehaviourPunCallbacks
 		}
 	}
 
-	public void SwitchActiveTeam()
-	{
-		TEAM newActiveteam;
-		TEAM CurrentActiveTeamOfRoom = (TEAM)PhotonNetwork.CurrentRoom.CustomProperties["ActiveTeam"];
-
-		if (CurrentActiveTeamOfRoom == TEAM.White)
-		{
-			newActiveteam = TEAM.Black;
-		}
-		else if (CurrentActiveTeamOfRoom == TEAM.Black)
-		{
-			newActiveteam = TEAM.White;
-		}
-		else
-		{
-			newActiveteam = TEAM.None;
-			Debug.LogError($"the new active team is None ");
-		}
-
-		PhotonNetwork.CurrentRoom.SetCustomProperty("ActiveTeam", newActiveteam);
-
-		object content = newActiveteam;
-		RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
-		PhotonNetwork.RaiseEvent((byte)Ev.SwitchState, content, raiseEventOptions, SendOptions.SendReliable);
-
-	}
 
 
 	public override void OnEnable()

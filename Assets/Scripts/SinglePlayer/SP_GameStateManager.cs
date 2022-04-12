@@ -1,3 +1,4 @@
+using gameEventNameSpace;
 using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
@@ -45,10 +46,10 @@ public class SP_GameStateManager : MonoBehaviourPunCallbacks
 		set => _enemyUnits = value;
 	}
 
-	//public BaseStateEvent StateEventSubject;
-	//public VoidEvent PlayerChangeEvent;
+	public BaseStateEvent StateEventSubject;
+	public VoidEvent PlayerChangeEvent;
 
-	protected SP_PlayerStateManager _selectedUnit;
+	private SP_PlayerStateManager _selectedUnit;
 
 	public SP_PlayerStateManager SelectedUnit
 	{

@@ -3,17 +3,15 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEngine;
 
 public class MP_GameStateManager : SP_GameStateManager, IOnEventCallback
 {
-	public TEAM MyTeam { get; private set; }
-	public TEAM opponentTeam { get; private set; }
-	public TEAM ActiveTeam { get; private set; }
+	[SerializeField] private TEAM _myteam;
+	public TEAM MyTeam { get => _myteam; private set => _myteam = value; }
 
-	private Transform parent;
 
+	[SerializeField] private TEAM _ActiveTeam;
 
 
 
@@ -25,16 +23,54 @@ public class MP_GameStateManager : SP_GameStateManager, IOnEventCallback
 
 
 
+	Player sender;
 
-	[SerializeField] protected new UnitPhoton _selectedUnit;
 
-	public new UnitPhoton SelectedUnit
+	/// <summary>
+	/// Wraps accessing the "turn" custom properties of a room.
+	/// </summary>
+	/// <value>The turn index</value>
+	public TEAM ActiveTeam
 	{
-		get => _selectedUnit; set
+		get { return PhotonNetwork.CurrentRoom.GetTurn(); }
+		private set
 		{
-			_selectedUnit = value;
+			PhotonNetwork.CurrentRoom.SetTurn(value, true);
 		}
 	}
+
+	public float TurnDuration = 20f;
+
+	public float ElapsedTimeInTurn
+	{
+		get { return ((float)(PhotonNetwork.ServerTimestamp - PhotonNetwork.CurrentRoom.GetStartTimeTurn())) / 1000.0f; }
+	}
+
+
+	public float RemainingSecondsInTurn
+	{
+		get { return Mathf.Max(0f, this.TurnDuration - this.ElapsedTimeInTurn); }
+	}
+
+
+	public bool IsCompletedByAll
+	{
+		get { return true; }
+	}
+
+	public bool IsFinishedByMe
+	{
+		get { return false; }
+	}
+
+	public bool TurnIsOver
+	{
+		get { return this.RemainingSecondsInTurn <= 0f; }
+	}
+
+	public IPunTurnManagerCallbacks TurnManagerListener;
+
+
 
 
 	public new List<UnitPhoton> Units
@@ -52,31 +88,132 @@ public class MP_GameStateManager : SP_GameStateManager, IOnEventCallback
 	}
 	public override void Awake()
 	{
-		// Reading Data sent by the roomManager (the creator of the this component)
-		MyTeam = (TEAM)photonView.InstantiationData[0];
-		opponentTeam = (TEAM)photonView.InstantiationData[1];
-		ActiveTeam = (TEAM)photonView.InstantiationData[2];
+		if (Instance == null)
+			Instance = this;
+		else
+			Destroy(gameObject);
+	}
 
-		//Hashtable hash = new Hashtable();
-		//hash.Add("ViewID", photonView.ViewID);
-		//PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+	public override void Start()
+	{
+
+	}
 
 
-		if (photonView.IsMine == false)
+
+
+
+	#region Callbacks
+
+	// called internally
+	void ListenOnEvent(byte eventCode, object content, int senderId)
+	{
+		if (senderId == -1)
 		{
-			parent = GameObject.FindWithTag("opponnetTeam").transform;
-			transform.SetParent(parent);
-			enabled = false;
+			return;
+		}
+
+		sender = PhotonNetwork.CurrentRoom.GetPlayer(senderId);
+
+		if (eventCode == (byte)Ev.SwitchState)
+		{
+			Debug.Log($"{PhotonNetwork.LocalPlayer.NickName} listen to {Ev.SwitchState} Event sent by {sender} ");
+
+
+			string res = string.Join("\n", $" listen to {Ev.SwitchState} => " +
+				$"{this.GetType().Name} has active team {ActiveTeam}" +
+				$" and my team is {MyTeam} " +
+				$"and room ActiveTeam in Romm is  \"{ActiveTeam}\"",
+				$"");
+			//Debug.LogError(res);
+			if (MyTeam == TEAM.Black)
+				RoomManager.Instance.blackText.text = res;
+			if (MyTeam == TEAM.White)
+				RoomManager.Instance.whiteText.text = res;
+
+			if (ActiveTeam != MyTeam) SwitchState(pauseState);
+			else if (ActiveTeam == MyTeam) SwitchState(playingState);
+			else Debug.Log($"event contenent is {ActiveTeam}");
+		}
+	}
+
+
+
+	public void OnEvent(EventData photonEvent)
+	{
+		this.ListenOnEvent(photonEvent.Code, photonEvent.CustomData, photonEvent.Sender);
+	}
+
+
+	#endregion
+
+
+
+
+	public void SwitchActiveTeam()
+	{
+
+		if (IsMyTurn() == false) return;
+
+
+		if (ActiveTeam == TEAM.White)
+		{
+			ActiveTeam = TEAM.Black;
+		}
+		else if (ActiveTeam == TEAM.Black)
+		{
+			ActiveTeam = TEAM.White;
 		}
 		else
 		{
-			parent = PhotonView.Find((int)photonView.InstantiationData[3]).transform;
-			transform.SetParent(parent);
-
+			ActiveTeam = TEAM.None;
+			Debug.LogError($"the new active team is None ");
 		}
 
+		// RAISE EVENT
+		RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+		PhotonNetwork.RaiseEvent((byte)Ev.SwitchState, null, raiseEventOptions, SendOptions.SendReliable);
+
+	}
+
+	private bool IsMyTurn()
+	{
+		return ActiveTeam == MyTeam;
+	}
+
+	[SerializeField] private UnitPhoton _selectedUnitMP;
+
+	public new UnitPhoton SelectedUnit
+	{
+		get => _selectedUnitMP;
+		set
+		{
+			if (SelectedUnit != null)
+				SelectedUnit.enabled = false;
 
 
+			_selectedUnitMP = value;
+
+			SelectedUnit.enabled = true;
+			Debug.Log($" selected id {SelectedUnit.photonView.ViewID}  {this}");
+		}
+
+	}
+
+
+
+
+	public void SetDependenties(List<UnitPhoton> units, List<UnitPhoton> opponentList, TEAM myTeam)
+	{
+		MyTeam = myTeam;
+		foreach (UnitPhoton unit in units)
+		{
+			Units.Add(unit);
+		}
+		foreach (UnitPhoton unit in opponentList)
+		{
+			EnemyUnits.Add(unit);
+		}
 	}
 
 
@@ -87,6 +224,12 @@ public class MP_GameStateManager : SP_GameStateManager, IOnEventCallback
 
 			UnitPhoton newUnit = CreateController(Units[i].name, Units[i].transform.position);
 			Units[i] = newUnit;
+			Debug.Log($"selected unit is {SelectedUnit}");
+			Units[i].transform.SetParent(this.transform);
+			if (Units[i] == SelectedUnit)
+			{
+				Debug.Log($"   selected unit is equal one of the units True");
+			}
 		}
 	}
 
@@ -101,43 +244,8 @@ public class MP_GameStateManager : SP_GameStateManager, IOnEventCallback
 
 
 
-	[PunRPC]
-	public void ReceiveEnemyList(List<object> enemies)
-	{
-		foreach (var item in enemies)
-		{
-			Debug.Log($"{item}");
-		}
-
-		EnemyUnits = enemies.Cast<UnitPhoton>().ToList();
-		photonView.RPC("ReceiveEnemyList", RpcTarget.Others, new object[] { Units.Cast<object>().ToArray() });
-	}
 
 
-	public void OnEvent(EventData photonEvent)
-	{
-		byte eventCode = photonEvent.Code;
-		if (eventCode == (byte)Ev.SwitchState)
-		{
-			ActiveTeam = (TEAM)photonEvent.CustomData;
-			TEAM activeTEAM = (TEAM)PhotonNetwork.CurrentRoom.CustomProperties["ActiveTeam"];
-			string res = string.Join("\n", $" listen to {Ev.SwitchState} => " +
-				$"{this.GetType().Name} has active team {ActiveTeam}" +
-				$" and my team is {MyTeam} " +
-				$"and room ActiveTeam in Romm is  \"{activeTEAM}\"",
-				$"");
-			Debug.LogError(res);
-
-			//if (MyTeam == TEAM.Black)
-			//	roomManager.blackText.text = res;
-			//if (MyTeam == TEAM.White)
-			//	roomManager.whiteText.text = res;
-
-			//if (activeTEAM != MyTeam) enableUnits(false);
-			//else if (activeTEAM == MyTeam) enableUnits(true);
-
-		}
-	}
 
 
 	private void Update()
@@ -149,17 +257,18 @@ public class MP_GameStateManager : SP_GameStateManager, IOnEventCallback
 
 	public void initGameManager()
 	{
+		generateUnits();
+		ActiveTeam = PhotonNetwork.CurrentRoom.GetTurn();
+		Debug.LogError($" active team = {ActiveTeam} myteam is {MyTeam}");
+		if (ActiveTeam == MyTeam)
+		{
+			SwitchState(playingState);
 
-		//transform.SetParent(parent);
-		SwitchState(playingState);
-
-	}
-	public void setDependencices(TEAM team, TEAM opponentTeam, TEAM activeTeam, Transform parent)
-	{
-		MyTeam = team;
-		ActiveTeam = activeTeam;
-		this.opponentTeam = opponentTeam;
-		this.parent = parent;
+		}
+		else
+		{
+			SwitchState(pauseState);
+		}
 	}
 
 
@@ -175,6 +284,7 @@ public class MP_GameStateManager : SP_GameStateManager, IOnEventCallback
 		PhotonNetwork.RemoveCallbackTarget(this);
 
 	}
+
 	public void SwitchState(BaseState<MP_GameStateManager> newState)
 	{
 		State?.ExitState(this);
@@ -182,11 +292,18 @@ public class MP_GameStateManager : SP_GameStateManager, IOnEventCallback
 		State.EnterState(this);
 	}
 
-	private void enableUnits(bool BOOL)
+	public void enableUnits(bool BOOL)
 	{
 		foreach (UnitPhoton unit in Units)
 		{
 			unit.enabled = BOOL;
+			//if (BOOL)
+			//	unit.GetComponent<Renderer>().material.color = Color.blue;
+			//else
+			//	unit.GetComponent<Renderer>().material.color = Color.red;
+
+
+
 		}
 	}
 

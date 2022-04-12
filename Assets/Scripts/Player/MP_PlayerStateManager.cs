@@ -9,7 +9,8 @@ public class MP_PlayerStateManager : SP_PlayerStateManager
 
 
 	[Tooltip("this properties are required for UnitPhoton")]
-	[SerializeField] protected MP_GameStateManager gameStateManager { get; set; }
+	[SerializeField] MP_GameStateManager _gameManager;
+	protected MP_GameStateManager gameStateManager { get => _gameManager; set => _gameManager = value; }
 
 	private BaseState<MP_PlayerStateManager> _State;
 
@@ -24,7 +25,7 @@ public class MP_PlayerStateManager : SP_PlayerStateManager
 
 	public float radius = 10;
 
-
+	public UnitPhoton CurrentTarget { get; set; }
 
 
 
@@ -46,10 +47,10 @@ public class MP_PlayerStateManager : SP_PlayerStateManager
 				UnitPhoton potentialUnit = unit.GetComponent<UnitPhoton>();
 				if (potentialUnit == null) continue;
 				//potentialUnit.photonView.RPC("AddMeToopponentList", RpcTarget.Others, gameStateManager.EnemyUnits);
-				if (potentialUnit.gameStateManager.MyTeam == gameStateManager.opponentTeam)
-				{
-					gameStateManager.EnemyUnits.Add(potentialUnit);
-				}
+				//if (potentialUnit.gameStateManager.MyTeam == gameStateManager.opponentTeam)
+				//{
+				//	gameStateManager.EnemyUnits.Add(potentialUnit);
+				//}
 			}
 
 			if (gameStateManager.MyTeam == TEAM.White)
@@ -59,6 +60,10 @@ public class MP_PlayerStateManager : SP_PlayerStateManager
 				RoomManager.Instance.blackText.text = $"Enemy {gameStateManager.EnemyUnits.Count}";
 
 		}
+	}
+
+	public void SelectNextUnit()
+	{
 	}
 
 	private void Update()

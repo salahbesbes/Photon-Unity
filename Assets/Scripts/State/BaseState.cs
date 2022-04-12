@@ -1,6 +1,5 @@
-
-
 using TMPro;
+using UnityEngine;
 
 public class PlayingState : BaseState<MP_GameStateManager>
 {
@@ -10,6 +9,15 @@ public class PlayingState : BaseState<MP_GameStateManager>
 		RoomManager.Instance.switchGameState.onClick.RemoveAllListeners();
 		RoomManager.Instance.switchGameState.onClick.AddListener(() => { gameContext.SwitchState(gameContext.pauseState); });
 		RoomManager.Instance.switchGameState.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"{GetType().Name}";
+		gameContext.enableUnits(true);
+
+
+		//gameContext.SelectedUnit = gameContext.Units.FirstOrDefault();
+		//UnitPhoton firstOneIdel = gameContext.EnemyUnits.FirstOrDefault(unit => unit.State is Idel_MP);
+		//gameContext.SelectedUnit.CurrentTarget = firstOneIdel ?? gameContext.EnemyUnits.FirstOrDefault();
+
+
+
 
 	}
 
@@ -21,6 +29,11 @@ public class PlayingState : BaseState<MP_GameStateManager>
 	public override void Update(MP_GameStateManager gameContext)
 	{
 		//Debug.LogError($"{gameContext.transform.name} update  of {GetType().Name}");
+
+		if (Input.GetKeyDown(KeyCode.LeftShift))
+		{
+			//gameContext.SelectNextUnit();
+		}
 
 	}
 }
@@ -35,7 +48,7 @@ public class PauseState : BaseState<MP_GameStateManager>
 		RoomManager.Instance.switchGameState.onClick.AddListener(() => { gameContext.SwitchState(gameContext.playingState); });
 		RoomManager.Instance.switchGameState.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"{GetType().Name}";
 
-
+		gameContext.enableUnits(false);
 	}
 
 	public override void ExitState(MP_GameStateManager gameContext)
