@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class MP_PlayerStateManager : SP_PlayerStateManager
 {
-	public new SelectingEnemy selectingEnemy = new SelectingEnemy();
+	public new SelectingEnemy_MP selectingEnemy = new SelectingEnemy_MP();
 	public new Idel_MP idelState = new Idel_MP();
 	public new DoingAction_MP doingAction = new DoingAction_MP();
 	public new Dead_MP dead = new Dead_MP();
