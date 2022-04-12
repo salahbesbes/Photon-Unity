@@ -1,8 +1,8 @@
 using TMPro;
 
-public class DoingAction_MP : BaseState<MP_PlayerStateManager>
+public class DoingAction : BaseState<SP_PlayerStateManager>
 {
-	public override void EnterState(MP_PlayerStateManager playerContext)
+	public override void EnterState(SP_PlayerStateManager playerContext)
 	{
 		//Debug.Log($"{playerContext.transform.name} enter state {GetType().Name}");
 		RoomManager.Instance.switchPlayerState.onClick.RemoveAllListeners();
@@ -11,16 +11,15 @@ public class DoingAction_MP : BaseState<MP_PlayerStateManager>
 
 	}
 
-	public override void ExitState(MP_PlayerStateManager playerContext)
+	public override void ExitState(SP_PlayerStateManager playerContext)
 	{
 		//Debug.Log($"{playerContext.transform.name} Exit state {GetType().Name}");
 
 	}
 
-	public override void Update(MP_PlayerStateManager playerContext)
+	public override void Update(SP_PlayerStateManager playerContext)
 	{
 		//Debug.Log($"{playerContext.transform.name} update state {GetType().Name}");
 
 	}
 }
-
